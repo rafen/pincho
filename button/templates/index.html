@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Alto de los verdes</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <!-- Custom styles for this template -->
+    <link href="http://getbootstrap.com/examples/cover/cover.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="http://getbootstrap.com/assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="inner cover">
+            <h1 class="cover-heading">{{latest_temp.temp}}°C</h1>
+            <h2>{{latest_temp.humidity}} H</h2>
+            <p class="lead">{{latest_temp.created}} </p>
+            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
+              History
+            </button>
+          </div>
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>By <a href="https://github.com/rafen">Rafen</a></p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Temperatures</h4>
+              </div>
+              <div class="modal-body">
+                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+    <!-- Chart libs -->
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+    <!-- I know, I'm too lazy to put this on a js file and create an enpoint...  but I will do that as soon as I have the time and energy ... -->
+    <script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        title: {
+            text: 'Temperatures',
+            x: -20 //center
+        },
+        subtitle: {
+            text: 'Source: Raspberry pi (DTH11 sensor)',
+            x: -20
+        },
+        xAxis: {
+            categories: [
+{% for temp in temps %}
+  '{{temp.created}}'{% if not forloop.last %},{% endif %}
+{% endfor %}
+            ]
+        },
+        yAxis: {
+            title: {
+                text: ''
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: 'Temperature °C',
+            data: [
+{% for temp in temps %}
+  {{temp.temp}}{% if not forloop.last %},{% endif %}
+{% endfor %}
+            ]
+        }, {
+            name: 'Humidity %',
+            data: [
+{% for temp in temps %}
+  {{temp.humidity}}{% if not forloop.last %},{% endif %}
+{% endfor %}
+            ]
+        }
+        ]
+    });
+});
+    </script>
+  </body>
+</html>
