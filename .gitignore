@@ -56,4 +56,6 @@ docs/_build/
 # PyBuilder
 target/
 
+# pid files
+*.pid
 db.sqlite3
