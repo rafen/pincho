@@ -7,7 +7,7 @@ from button.models import Temp
 @task(name='button.tasks.temp')
 def temp():
     humidity, temperature = Adafruit_DHT.read_retry(11, 4)
-    if humidity is not None and temperature is not None:
+    if humidity and temperature:
         Temp.objects.create(temp=temperature, humidity=humidity)
     return humidity, temperature
 
